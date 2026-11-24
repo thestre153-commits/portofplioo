@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Máxim — Portfolio de diseño web</title>
+<meta name="description" content="Portfolio de Máxim: webs para yoga, uñas, barbería y restaurantes con reserva por WhatsApp." />
+<meta name="theme-color" content="#07080d" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#07080d; --glass:rgba(255,255,255,.05); --line:rgba(255,255,255,.1); --text:#eef1ff; --muted:#8e95b3; --a:#7c5cff; --b:#22d3ee; --c:#34d399; color-scheme:dark; }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:"Sora",system-ui,-apple-system,sans-serif; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); overflow-x:hidden; }
+  :focus-visible { outline:2px solid var(--b); outline-offset:3px; }
+  canvas#net { position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:.4; pointer-events:none; }
+  .aurora { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .aurora i { position:absolute; width:50vmax; height:50vmax; border-radius:50%; filter:blur(100px); opacity:.28; animation:drift 20s ease-in-out infinite alternate; }
+  .aurora i:nth-child(1){ background:var(--a); left:-15vmax; top:-18vmax; }
+  .aurora i:nth-child(2){ background:var(--b); right:-22vmax; top:30vmax; animation-delay:-8s; opacity:.15; }
+  @keyframes drift { to { transform:translate(8vmax,6vmax) scale(1.15); } }
+  main, nav, footer { position:relative; z-index:1; }
+  .wrap { max-width:1060px; margin:0 auto; padding:0 20px; }
+
+  nav { position:fixed; top:calc(12px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:20; width:min(92%,720px); display:flex; justify-content:space-between; align-items:center; gap:12px; padding:9px 10px 9px 20px; background:rgba(10,12,20,.6); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid var(--line); border-radius:999px; }
+  .logo { font-weight:700; }
+  nav ul { display:flex; gap:22px; list-style:none; }
+  nav ul a { color:var(--muted); text-decoration:none; font-size:.85rem; transition:color .2s; }
+  nav ul a:hover { color:var(--text); }
+  .btn { display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; text-decoration:none; color:#fff; font-size:.85rem; font-weight:600; padding:12px 20px; border-radius:999px; background:linear-gradient(110deg,var(--a),var(--b),var(--a)); background-size:200% 100%; transition:background-position .5s, transform .2s, box-shadow .3s; }
+  .btn:hover { background-position:100% 0; transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,92,255,.45); }
+  .btn.ghost { background:var(--glass); border:1px solid var(--line); }
+  .btn.sm { padding:9px 16px; }
+
+  /* Presentación */
+  .hero { min-height:92svh; display:flex; flex-direction:column; justify-content:center; padding:120px 0 50px; }
+  .avail { display:inline-flex; gap:8px; align-items:center; width:fit-content; font-size:.78rem; color:var(--muted); padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:var(--glass); margin-bottom:24px; }
+  .avail b { width:7px; height:7px; border-radius:50%; background:var(--c); box-shadow:0 0 10px var(--c); animation:pulse 1.6s infinite; }
+  @keyframes pulse { 50% { transform:scale(1.5); opacity:.6; } }
+  .hero h1 { font-size:clamp(2.6rem,9vw,6.2rem); line-height:1; letter-spacing:-.04em; font-weight:700; }
+  .grad { background:linear-gradient(100deg,var(--a),var(--b),var(--c),var(--a)); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shine 6s linear infinite; }
+  @keyframes shine { to { background-position:250% 0; } }
+  .role { font-size:clamp(1.1rem,2.6vw,1.6rem); font-weight:300; margin-top:20px; color:var(--muted); }
+  .type::after { content:""; display:inline-block; width:3px; height:.9em; margin-left:4px; background:var(--b); vertical-align:-.1em; animation:blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  .intro { color:var(--muted); font-weight:300; line-height:1.7; max-width:52ch; margin:22px 0 30px; }
+  .row-btn { display:flex; gap:10px; flex-wrap:wrap; }
+
+  section { padding:70px 0 20px; }
+  h2 { font-size:clamp(1.7rem,4vw,2.6rem); letter-spacing:-.02em; line-height:1.15; margin-bottom:10px; }
+  .lead { color:var(--muted); font-weight:300; line-height:1.6; max-width:52ch; margin-bottom:22px; }
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+  .f { background:var(--glass); border:1px solid var(--line); color:var(--muted); border-radius:999px; padding:9px 16px; font-size:.82rem; cursor:pointer; transition:.25s; }
+  .f:hover { color:var(--text); }
+  .f[aria-pressed="true"] { color:#fff; border-color:transparent; background:linear-gradient(110deg,var(--a),var(--b)); }
+
+  /* Proyectos */
+  .work { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; padding:42px 0; border-top:1px solid var(--line); }
+  .work:nth-child(even) .info { order:2; }
+  .work h3 { font-size:clamp(1.6rem,3.6vw,2.4rem); letter-spacing:-.02em; margin:12px 0; }
+  .work p { color:var(--muted); line-height:1.65; font-weight:300; max-width:44ch; margin-bottom:18px; }
+  .tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .tags span { font-size:.74rem; padding:6px 12px; border-radius:999px; border:1px solid var(--line); color:var(--b); }
+  .kind { font-size:.8rem; color:var(--muted); }
+  .stagebox { position:relative; display:grid; place-items:center; min-height:470px; border-radius:28px; border:1px solid var(--line); background:radial-gradient(420px circle at 50% 40%, rgba(124,92,255,.28), transparent 70%), var(--glass); cursor:pointer; overflow:hidden; perspective:900px; }
+  .phone { position:relative; width:220px; height:440px; border-radius:36px; border:8px solid #15171f; background:#fff; overflow:hidden; box-shadow:0 30px 70px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12); transition:transform .15s ease-out; animation:float 7s ease-in-out infinite; }
+  .phone iframe { width:390px; height:811px; border:none; transform:scale(.523); transform-origin:0 0; background:#fff; }
+  .phone::after { content:""; position:absolute; top:8px; left:50%; width:60px; height:16px; margin-left:-30px; border-radius:99px; background:#15171f; z-index:2; }
+  .pv { height:100%; overflow:hidden; background:#fff; }
+  .mock { background:var(--bg); color:var(--ink); font-size:9px; line-height:1.4; animation:scrollpage 18s ease-in-out infinite alternate; will-change:transform; }
+  img.mock { display:block; width:100%; height:auto; background:#fff; }
+  @keyframes scrollpage { 0%,6% { transform:translateY(0); } 94%,100% { transform:translateY(calc(-100% + 424px)); } }
+  .adder { display:flex; max-width:560px; padding:5px; border:1px solid var(--line); border-radius:999px; background:rgba(0,0,0,.35); }
+  .adder input { flex:1; min-width:0; background:none; border:none; color:var(--text); padding:0 16px; font-size:.9rem; }
+  .adder input:focus-visible { outline:none; }
+  .adnote { color:var(--muted); font-size:.8rem; min-height:1.3em; margin:8px 6px 10px; }
+  .info .btn + .btn { margin-left:8px; }
+  .phone-empty { height:100%; display:grid; place-content:center; text-align:center; padding:20px; font-size:10px; line-height:1.5; color:#555; background:#f3f3f6; }
+  .phone-empty.sk { animation:pulse2 1.4s infinite; }
+  @keyframes pulse2 { 50% { opacity:.4; } }
+  @keyframes float { 50% { margin-top:-10px; } }
+  .stagebox .hint { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); font-size:.76rem; padding:7px 14px; border-radius:999px; background:rgba(0,0,0,.55); border:1px solid var(--line); opacity:0; transition:opacity .3s; white-space:nowrap; }
+  .stagebox:hover .hint, .stagebox:focus-visible .hint { opacity:1; }
+  .empty { color:var(--muted); padding:30px 0; }
+
+  /* Sobre mí y servicios */
+  .about { display:grid; grid-template-columns:1.2fr 1fr; gap:30px; }
+  .box { background:var(--glass); border:1px solid var(--line); border-radius:24px; padding:26px; }
+  .box p { color:var(--muted); font-weight:300; line-height:1.7; }
+  .list { list-style:none; display:grid; gap:12px; }
+  .list li { display:flex; gap:12px; align-items:flex-start; font-size:.92rem; line-height:1.45; }
+  .list li::before { content:""; flex:none; width:8px; height:8px; margin-top:7px; border-radius:50%; background:linear-gradient(135deg,var(--a),var(--b)); box-shadow:0 0 10px var(--b); }
+
+  .final { text-align:center; margin:80px 0 50px; padding:54px 22px; border-radius:30px; border:1px solid var(--line); background:radial-gradient(600px circle at 50% 0%, rgba(124,92,255,.3), transparent 70%), var(--glass); }
+  .ask { display:flex; max-width:460px; margin:24px auto 0; padding:5px; border:1px solid var(--line); border-radius:999px; background:rgba(0,0,0,.35); }
+  .ask input { flex:1; min-width:0; background:none; border:none; color:var(--text); padding:0 16px; font-size:.9rem; }
+  .ask input:focus-visible { outline:none; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:0 0 40px; }
+
+  .rv { opacity:0; transform:translateY(28px); transition:opacity .8s, transform .8s cubic-bezier(.2,.8,.2,1); }
+  .rv.in { opacity:1; transform:none; }
+
+  /* Vista previa */
+  .preview { position:fixed; inset:0; z-index:100; background:#07080f; display:none; flex-direction:column; }
+  .preview.open { display:flex; animation:fade .3s; }
+  @keyframes fade { from { opacity:0; transform:scale(.98); } }
+  .bar { padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px; display:flex; gap:8px; align-items:center; border-bottom:1px solid var(--line); }
+  .bar .title { flex:1; text-align:center; font-size:.82rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stage { flex:1; position:relative; display:flex; justify-content:center; padding:12px; }
+  .stage iframe { position:relative; z-index:1; width:100%; height:100%; border:none; background:#fff; border-radius:16px; transition:opacity .4s; }
+  .stage.mobile iframe { max-width:390px; }
+  .stage.loading iframe { opacity:0; }
+  .note { position:absolute; inset:0; display:grid; place-content:center; gap:10px; text-align:center; color:var(--muted); font-size:.88rem; padding:20px; }
+  .note a { color:var(--b); }
+  .tools { display:flex; gap:8px; justify-content:center; padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); }
+  .tools .btn[aria-pressed="true"] { background:linear-gradient(110deg,var(--a),var(--b)); }
+
+  @media (max-width:820px) {
+    nav ul { display:none; }
+    .work { grid-template-columns:1fr; gap:22px; }
+    .work:nth-child(even) .info { order:0; }
+    .about { grid-template-columns:1fr; }
+    .stagebox { min-height:440px; }
+  }
+  @media (prefers-reduced-motion:reduce) { .pv { overflow-y:auto; } *,*::before,*::after { animation:none !important; transition:none !important; } .rv { opacity:1; transform:none; } canvas#net { display:none; } }
+</style>
+</head>
+<body>
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+
+<nav aria-label="Principal">
+  <span class="logo">Máxim</span>
+  <ul><li><a href="#trabajos">Trabajos</a></li><li><a href="#sobre-mi">Sobre mí</a></li><li><a href="#contacto">Contacto</a></li></ul>
+  <a class="btn sm" id="navWa" target="_blank" rel="noopener">Hablemos</a>
+</nav>
+
+<main>
+  <div class="wrap">
+    <header class="hero">
+      <span class="avail"><b></b>Disponible para nuevos proyectos</span>
+      <h1>Hola, soy <span class="grad">Máxim</span></h1>
+      <p class="role">Diseño webs para <span class="type" id="typed">yoga</span></p>
+      <p class="intro">Diseñador web para negocios locales. Cada página se ve bien en el móvil y lleva un botón para reservar por WhatsApp.</p>
+      <div class="row-btn">
+        <a class="btn" href="#trabajos">Ver mis trabajos</a>
+        <a class="btn ghost" href="#contacto">Contactar</a>
+      </div>
+    </header>
+
+    <section id="trabajos">
+      <h2 class="rv">Trabajos <span class="grad">seleccionados</span></h2>
+      <p class="lead rv">Pega el enlace de una web y la muestro aquí, con la página bajando dentro del móvil.</p>
+      <form class="adder rv" id="adder">
+        <input id="siteUrl" type="text" inputmode="url" autocomplete="off" placeholder="Pega el enlace, ej: nfx.es" aria-label="Enlace de la web" required />
+        <button class="btn" type="submit">Añadir</button>
+      </form>
+      <p class="adnote" id="adnote" role="status"></p>
+      <div class="filters rv" id="filters" role="group" aria-label="Filtrar por sector"></div>
+      <div id="works"></div>
+    </section>
+
+    <section id="sobre-mi">
+      <h2 class="rv">Sobre <span class="grad">mí</span></h2>
+      <div class="about">
+        <div class="box rv"><p>Trabajo con pequeños negocios que quieren una web clara, rápida y fácil de usar desde el móvil. Me encargo del diseño, los textos y la publicación, y conecto cada web con WhatsApp para que tus clientes reserven sin llamar.</p></div>
+        <div class="box rv"><ul class="list">
+          <li>Diseño pensado primero para móvil</li>
+          <li>Reserva directa por WhatsApp</li>
+          <li>Publicación en Netlify</li>
+          <li>Cambios incluidos tras el borrador</li>
+        </ul></div>
+      </div>
+    </section>
+
+    <section class="final rv" id="contacto">
+      <h2>¿Tienes un proyecto en mente?</h2>
+      <p class="lead" style="margin-inline:auto">Dime tu tipo de negocio y te respondo hoy.</p>
+      <form class="ask" id="ask">
+        <input id="biz" type="text" placeholder="Ej: estudio de yoga" aria-label="Tu tipo de negocio" />
+        <button class="btn" type="submit">Enviar por WhatsApp</button>
+      </form>
+    </section>
+  </div>
+</main>
+<footer>© Máxim · Diseño web</footer>
+
+<div class="preview" id="preview" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+  <div class="bar">
+    <button class="btn ghost sm" id="close">✕ Salir</button>
+    <span class="title" id="pTitle">Vista previa</span>
+    <a class="btn sm" id="pWa" target="_blank" rel="noopener">Quiero una igual</a>
+  </div>
+  <div class="stage mobile loading" id="stage">
+    <div class="note"><span>Cargando demo…</span><span>¿No aparece? <a id="tab1" target="_blank" rel="noopener">Ábrela en otra pestaña</a></span></div>
+    <iframe id="frame" title="Demo" loading="lazy"></iframe>
+  </div>
+  <div class="tools">
+    <button class="btn ghost sm" id="vm" aria-pressed="true">Móvil</button>
+    <button class="btn ghost sm" id="vd" aria-pressed="false">Escritorio</button>
+  </div>
+</div>
+
+<script>
+  // ضع هنا روابط مواقعك فقط — الأداة تقرأ الموقع وتفهمه وتعرضه تلقائياً
+  const SITES = ["https://nfx.es/"];
+  const myWhatsAppNumber = "34600000000"; // رقمك بصيغة دولية بدون +
+  const siteName = "mi-trabajo.es";
+
+  const $ = id => document.getElementById(id);
+  const wa = t => `https://wa.me/${myWhatsAppNumber}?text=${encodeURIComponent(t)}`;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // يفهم نوع الموقع من عنوانه ووصفه
+  const KEYS = [
+    ["Yoga & Fitness", /yoga|pilates|fitness|entrenamiento|meditaci|gimnas|funcional/],
+    ["Nails & Estética", /uñas|unas|nails|manicur|pedicur|estética|estetica|belleza|beauty|peluquer/],
+    ["Barbería", /barber|afeitado/],
+    ["Restaurantes", /restaurante|cocina|tapas|cafeter|pizzer|comida|carta/]
+  ];
+  const guess = t => (KEYS.find(([, re]) => re.test(t.toLowerCase())) || ["Otros"])[0];
+  const norm = u => { u = u.trim(); if (!/^https?:\/\//i.test(u)) u = "https://" + u; try { return new URL(u).href; } catch { return ""; } };
+  const mk = (url, extra) => { const host = new URL(url).host.replace(/^www\./, ""); return { url, host, title: host, label: "", desc: "", img: "", state: "load", extra }; };
+
+  let saved = [], items = [], current = "all", lastFocus = null, io;
+  try { saved = JSON.parse(localStorage.getItem("pf_sites") || "[]"); } catch {}
+  const store = () => { try { localStorage.setItem("pf_sites", JSON.stringify(saved)); } catch {} };
+  const find = u => items.find(i => i.url === u);
+  const note = m => { $("adnote").textContent = m || ""; };
+
+  // Microlink: يرجع عنوان الموقع ووصفه ولقطة شاشة كاملة بمقاس الجوال
+  async function resolve(it) {
+    const ck = "pf_c_" + it.url;
+    try { const c = JSON.parse(localStorage.getItem(ck) || "null"); if (c && Date.now() - c.t < 6 * 36e5) return Object.assign(it, c.d, { state: "ok" }); } catch {}
+    const api = "https://api.microlink.io/?" + new URLSearchParams({ url: it.url, screenshot: "true", meta: "true",
+      "screenshot.fullPage": "true", "screenshot.type": "jpeg", "viewport.width": "390", "viewport.height": "844",
+      "viewport.deviceScaleFactor": "1.5", "viewport.isMobile": "true" });
+    try {
+      const j = await (await fetch(api)).json();
+      if (j.status !== "success" || !j.data || !j.data.screenshot) throw 0;
+      const d = { title: j.data.title || it.host, desc: j.data.description || "", img: j.data.screenshot.url };
+      d.label = guess(`${d.title} ${d.desc} ${it.host}`);
+      try { localStorage.setItem(ck, JSON.stringify({ t: Date.now(), d })); } catch {}
+      return Object.assign(it, d, { state: "ok" });
+    } catch { it.state = "err"; it.label = "Otros"; return it; }
+  }
+  // سرعة النزول حسب طول الصفحة
+  window.pageSpeed = img => { const h = img.naturalHeight / img.naturalWidth * 204; img.style.animationDuration = Math.min(60, Math.max(10, h / 45)) + "s"; };
+
+  function renderFilters() {
+    const ls = [...new Set(items.filter(i => i.state === "ok").map(i => i.label))];
+    if (current !== "all" && !ls.includes(current)) current = "all";
+    $("filters").innerHTML = ls.length > 1 ? ["all", ...ls].map(k => `<button class="f" data-cat="${esc(k)}" aria-pressed="${k === current}">${k === "all" ? "Todos" : esc(k)}</button>`).join("") : "";
+  }
+  function phoneHTML(it) {
+    if (it.state === "ok") return `<img class="mock" src="${esc(it.img)}" alt="Captura de ${esc(it.host)}" onload="pageSpeed(this)">`;
+    if (it.state === "err") return `<div class="phone-empty">No se pudo leer la captura.<br>Toca para abrir la web.</div>`;
+    return `<div class="phone-empty sk">Leyendo la web…</div>`;
+  }
+  function renderWorks() {
+    const list = items.filter(i => current === "all" || i.label === current);
+    $("works").innerHTML = list.length ? list.map(it => `
+      <article class="work">
+        <div class="info">
+          <span class="kind">${esc(it.host)}</span>
+          <h3>${it.state === "load" ? "Cargando…" : esc(it.label)}</h3>
+          <p>${esc(it.desc)}</p>
+          <button class="btn" data-url="${esc(it.url)}">Ver demo en vivo ↗</button>${it.extra ? `<button class="btn ghost sm" data-rm="${esc(it.url)}">Quitar</button>` : ""}
+        </div>
+        <div class="stagebox" role="button" tabindex="0" data-url="${esc(it.url)}" aria-label="Abrir demo de ${esc(it.host)}">
+          <div class="phone"><div class="pv">${phoneHTML(it)}</div></div>
+          <span class="hint">Toca para abrir la demo</span>
+        </div>
+      </article>`).join("") : `<p class="empty">Añade el enlace de una web para empezar.</p>`;
+  }
+  const refresh = () => { renderFilters(); renderWorks(); };
+
+  async function addSite(raw) {
+    const url = norm(raw); if (!url) return note("El enlace no es válido.");
+    if (find(url)) return note("Ese enlace ya está en la lista.");
+    const it = mk(url, true); items.push(it); saved.push(url); store(); note("Leyendo la web…"); refresh();
+    await resolve(it); refresh();
+    note(it.state === "ok" ? "Listo. Para dejarla fija, añade el enlace a la lista SITES del código." : "No pude leer esa web ahora (puede ser el límite diario gratuito). Inténtalo más tarde.");
+  }
+  function removeSite(u) {
+    items = items.filter(i => i.url !== u); saved = saved.filter(x => x !== u); store(); refresh();
+  }
+
+  $("adder").onsubmit = e => { e.preventDefault(); const v = $("siteUrl").value; $("siteUrl").value = ""; addSite(v); };
+  $("filters").onclick = e => { const b = e.target.closest("[data-cat]"); if (b) { current = b.dataset.cat; refresh(); } };
+  $("works").onclick = e => {
+    const rm = e.target.closest("[data-rm]"); if (rm) return removeSite(rm.dataset.rm);
+    const b = e.target.closest("[data-url]"); if (b) openPreview(find(b.dataset.url), b);
+  };
+  $("works").onkeydown = e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".stagebox")) { e.preventDefault(); e.target.click(); } };
+  $("works").addEventListener("pointermove", e => {
+    if (calm || e.pointerType === "touch") return;
+    const s = e.target.closest(".stagebox"); if (!s) return;
+    const r = s.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    s.querySelector(".phone").style.transform = `rotateY(${x * 22}deg) rotateX(${-y * 16}deg)`;
+  });
+  $("works").addEventListener("pointerout", e => { const s = e.target.closest(".stagebox"); if (s) s.querySelector(".phone").style.transform = ""; });
+
+  async function init() {
+    SITES.map(norm).filter(Boolean).concat(saved).forEach((u, i) => { if (!find(u)) items.push(mk(u, i >= SITES.length)); });
+    refresh();
+    await Promise.all(items.map(resolve)); refresh();
+  }
+
+  function setView(m) { $("stage").classList.toggle("mobile", m); $("vm").setAttribute("aria-pressed", m); $("vd").setAttribute("aria-pressed", !m); }
+  $("vm").onclick = () => setView(true); $("vd").onclick = () => setView(false);
+  function openPreview(p, trigger) {
+    lastFocus = trigger;
+    $("pTitle").textContent = p.title;
+    $("pWa").href = wa(`Hola Máxim, vi el ejemplo "${p.title}" en ${siteName} y me interesa una web así.`);
+    $("tab1").href = p.url;
+    $("stage").classList.add("loading");
+    $("frame").onload = () => $("stage").classList.remove("loading");
+    $("frame").src = p.url;
+    setView(true);
+    $("preview").classList.add("open"); document.body.style.overflow = "hidden"; $("close").focus();
+  }
+  function closePreview() {
+    $("preview").classList.remove("open"); $("frame").onload = null; $("frame").src = "about:blank";
+    document.body.style.overflow = ""; if (lastFocus) lastFocus.focus();
+  }
+  $("close").onclick = closePreview;
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && $("preview").classList.contains("open")) closePreview(); });
+
+  $("navWa").href = wa(`Hola Máxim, vi tu portfolio ${siteName} y quiero hablar de un proyecto.`);
+  $("ask").onsubmit = e => { e.preventDefault(); const b = $("biz").value.trim();
+    window.open(wa(`Hola Máxim, tengo ${b || "un negocio"} y quiero una web como las de tu portfolio ${siteName}.`), "_blank", "noopener"); };
+
+  const words = ["yoga", "uñas", "barberías", "restaurantes"];
+  (async function typing() {
+    if (calm) { $("typed").textContent = words[0]; return; }
+    for (let i = 0; ; i = (i + 1) % words.length) {
+      for (let k = 1; k <= words[i].length; k++) { $("typed").textContent = words[i].slice(0, k); await sleep(90); }
+      await sleep(1600);
+      for (let k = words[i].length; k >= 0; k--) { $("typed").textContent = words[i].slice(0, k); await sleep(45); }
+      await sleep(250);
+    }
+  })();
+
+  io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), { threshold: .15 });
+  document.querySelectorAll(".rv").forEach(el => io.observe(el));
+
+  (function net() {
+    if (calm) return;
+    const cv = $("net"), ctx = cv.getContext("2d"); let W, H, pts = [], vis = true;
+    const size = () => { const d = devicePixelRatio || 1; W = cv.width = innerWidth * d; H = cv.height = innerHeight * d;
+      pts = Array.from({ length: Math.min(50, Math.floor(innerWidth / 20)) }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .4 * d, vy: (Math.random() - .5) * .4 * d })); };
+    addEventListener("resize", size); size();
+    document.addEventListener("visibilitychange", () => { vis = !document.hidden; if (vis) frame(); });
+    function frame() {
+      if (!vis) return; ctx.clearRect(0, 0, W, H); const max = 150 * (devicePixelRatio || 1);
+      for (const p of pts) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1;
+        ctx.fillStyle = "rgba(124,92,255,.8)"; ctx.beginPath(); ctx.arc(p.x, p.y, 1.6, 0, 7); ctx.fill(); }
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+        if (d < max) { ctx.strokeStyle = `rgba(34,211,238,${.3 * (1 - d / max)})`; ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke(); } }
+      requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
+  init();
+</script>
+</body>
+</html>
